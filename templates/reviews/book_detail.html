@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} | Book Review Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <a href="{% url 'book_list' %}" class="text-decoration-none">
+        ← Back to Books
+    </a>
+
+    <div class="card shadow-sm border-0 mt-3 mb-5">
+        <div class="card-body p-4 p-lg-5">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge text-bg-secondary">{{ book.genre }}</span>
+                        {% if book.featured %}
+                            <span class="badge text-bg-warning">Featured</span>
+                        {% endif %}
+                    </div>
+
+                    <h1 class="fw-bold">{{ book.title }}</h1>
+                    <p class="lead text-secondary">by {{ book.author }}</p>
+                    <p>
+                        <strong>Publication date:</strong>
+                        {{ book.publication_date|date:"F d, Y" }}
+                    </p>
+
+                    <p class="mb-0">
+                        {{ book.description|default:"No description available." }}
+                    </p>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="detail-actions p-4 rounded">
+                        <h2 class="h5">Book Actions</h2>
+                        {% if book.average_rating %}
+                            <p class="fs-4 fw-bold mb-3">
+                                ⭐ {{ book.average_rating }}/5
+                            </p>
+                        {% else %}
+                            <p class="text-secondary">No ratings yet</p>
+                        {% endif %}
+
+                        <div class="d-grid gap-2">
+                            <a
+                                href="{% url 'review_create_for_book' book.pk %}"
+                                class="btn btn-warning"
+                            >
+                                Add Review
+                            </a>
+                            <a
+                                href="{% url 'book_update' book.pk %}"
+                                class="btn btn-outline-primary"
+                            >
+                                Edit Book
+                            </a>
+                            <a
+                                href="{% url 'book_delete' book.pk %}"
+                                class="btn btn-outline-danger"
+                            >
+                                Delete Book
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Reviews</h2>
+        <span class="badge text-bg-dark">{{ book.reviews.count }}</span>
+    </div>
+
+    <div class="vstack gap-3">
+        {% for review in book.reviews.all %}
+            <article class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex flex-column flex-md-row justify-content-between gap-2">
+                        <div>
+                            <h3 class="h5 mb-1">{{ review.user.name }}</h3>
+                            <p class="text-secondary small mb-2">
+                                {{ review.created_at|date:"M d, Y" }}
+                            </p>
+                        </div>
+                        <div class="fw-bold">⭐ {{ review.rating }}/5</div>
+                    </div>
+
+                    <p>{{ review.comment }}</p>
+
+                    <div class="d-flex gap-2">
+                        <a
+                            href="{% url 'review_update' review.pk %}"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+                            Edit
+                        </a>
+                        <a
+                            href="{% url 'review_delete' review.pk %}"
+                            class="btn btn-outline-danger btn-sm"
+                        >
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </article>
+        {% empty %}
+            <div class="alert alert-info">
+                No reviews yet. Be the first to review this book.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

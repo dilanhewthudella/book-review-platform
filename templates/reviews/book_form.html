@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ page_title }} | Book Review Platform
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="form-card mx-auto shadow-sm">
+
+        <h1 class="fw-bold mb-4">
+            {{ page_title }}
+        </h1>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+            class="needs-validation"
+            novalidate
+        >
+
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+
+            {% for field in form %}
+
+                {# ------------------------------- #}
+                {# FEATURED CHECKBOX              #}
+                {# ------------------------------- #}
+
+                {% if field.name == "featured" %}
+
+                    <div class="form-check mb-3">
+
+                        {{ field }}
+
+                        <label
+                            class="form-check-label"
+                            for="{{ field.id_for_label }}"
+                        >
+                            {{ field.label }}
+                        </label>
+
+                        {% for error in field.errors %}
+                            <div class="text-danger small">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                {# ------------------------------- #}
+                {# BOOK COVER IMAGE               #}
+                {# ------------------------------- #}
+
+                {% elif field.name == "image" %}
+
+                    <div class="mb-4">
+
+                        <label
+                            class="form-label"
+                            for="{{ field.id_for_label }}"
+                        >
+                            Book Cover
+                        </label>
+
+                        {# Show existing image when editing #}
+
+                        {% if form.instance.image %}
+
+                            <div class="mb-3">
+
+                                <p class="text-muted small mb-2">
+                                    Current book cover:
+                                </p>
+
+                                <img
+                                    src="{{ form.instance.image.url }}"
+                                    alt="{{ form.instance.title }}"
+                                    class="img-thumbnail"
+                                    style="max-width: 180px;"
+                                >
+
+                            </div>
+
+                        {% endif %}
+
+                        {{ field }}
+
+                        <div class="form-text">
+                            Choose a cover image for the book.
+                        </div>
+
+                        {% for error in field.errors %}
+                            <div class="text-danger small">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+
+                {# ------------------------------- #}
+                {# ALL OTHER FIELDS               #}
+                {# ------------------------------- #}
+
+                {% else %}
+
+                    <div class="mb-3">
+
+                        <label
+                            class="form-label"
+                            for="{{ field.id_for_label }}"
+                        >
+                            {{ field.label }}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                            <div class="form-text">
+                                {{ field.help_text }}
+                            </div>
+                        {% endif %}
+
+                        {% for error in field.errors %}
+                            <div class="text-danger small">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                        <div class="invalid-feedback">
+                            Please enter a valid {{ field.label|lower }}.
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+
+            {# ------------------------------- #}
+            {# BUTTONS                       #}
+            {# ------------------------------- #}
+
+            <div class="d-flex gap-2 mt-4">
+
+                <button
+                    type="submit"
+                    class="btn btn-dark"
+                >
+                    {{ button_text }}
+                </button>
+
+                <a
+                    href="{% url 'book_list' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

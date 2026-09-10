@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete | Book Review Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="form-card mx-auto shadow-sm">
+        <div class="text-center">
+            <div class="delete-icon mb-3">⚠️</div>
+            <h1 class="h2 fw-bold">Confirm Delete</h1>
+            <p class="text-secondary">
+                Are you sure you want to delete
+                <strong>{{ object_name }}</strong>?
+            </p>
+            <p class="text-danger small">This action cannot be undone.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex justify-content-center gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        Yes, Delete
+                    </button>
+
+                    {% if cancel_pk %}
+                        <a
+                            href="{% url cancel_url cancel_pk %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Cancel
+                        </a>
+                    {% else %}
+                        <a
+                            href="{% url cancel_url %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Cancel
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
